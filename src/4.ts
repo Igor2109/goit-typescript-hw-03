@@ -2,49 +2,46 @@ interface IKey {
   getSignature: () => number;
 }
 
-class Key {
+class Key implements IKey {
   constructor(private signature: number) {
     this.signature = signature;
   }
-  getSignature() {
+  getSignature(): number {
     return this.signature;
   }
-}
-interface IPerson {
-  getKey: () => IKey;
 }
 
 class Person {
   private key: IKey;
-  constructor(key: IKey) {
-    this.key = key;
+  constructor(keyObj: IKey) {
+    this.key = keyObj;
   }
-  getKey() {
+  getKey(): IKey {
     return this.key;
   }
 }
 
 abstract class House {
-  key: IKey;
   door: boolean;
-  tenants: IPerson[];
-  comeIn(person: IPerson) {
+  key: IKey;
+  tenants: Array<Person> = [];
+  constructor(keyObj: IKey) {
+    this.key = keyObj;
+  }
+  comeIn(person: Person): void {
     if (this.door === true) {
       this.tenants.push(person);
     }
   }
-  abstract openDoor(key: IKey): void;
+  abstract openDoor(keyObj: IKey): void;
 }
 
 class MyHouse extends House {
-  door = false;
-  tenants = [];
-  constructor(key: IKey) {
-    super();
-    this.key = key;
+  constructor(keyObj: IKey) {
+    super(keyObj);
   }
-  openDoor(key: IKey) {
-    if (this.key === key) {
+  openDoor(keyObj: IKey): void {
+    if (this.key.getSignature() === key.getSignature()) {
       this.door = true;
     }
   }
